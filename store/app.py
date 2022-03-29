@@ -1,12 +1,9 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 import sys
-import os
 
-from store.settings import InitSettings, get_update_ui
 from store.widgets.buttons import InitButtons
-
-
-Ui_MainWindow = get_update_ui()
+from store.settings import InitSettings, update_ui
+from store.ui.main_ui import Ui_MainWindow
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -20,6 +17,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
 if __name__ == "__main__":
+    update_ui()
     APP = QApplication(sys.argv)
     WIN = MainWindow()
     WIN.show()
