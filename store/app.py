@@ -1,9 +1,12 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
-from PyQt5.QtGui import QPixmap
 import sys
+import os
 
-from store.settings import SetSettings, Ui_MainWindow, BASE_DIR
+from store.settings import InitSettings, get_update_ui
 from store.widgets.buttons import InitButtons
+
+
+Ui_MainWindow = get_update_ui()
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -12,7 +15,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.setCentralWidget(self.layoutWidget)
 
-        SetSettings(self)
+        InitSettings(self)
         InitButtons(self)
 
 

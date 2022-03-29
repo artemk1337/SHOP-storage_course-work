@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QTableWidgetItem, QSpinBox
 
-from store.settings import Ui_MainWindow
+from store.ui.main_ui import Ui_MainWindow
 
 
 class WinTableData:
