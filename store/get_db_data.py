@@ -4,13 +4,14 @@
 from bs4 import BeautifulSoup
 import collections
 import requests
+import random
 import bs4
 import re
 
-
 if __name__ == '__main__':
-    headphones = collections.namedtuple("Headphones", ["image", "year", "sound", "commute", "sports", "office",
-                                                       "wireless_gaming", "wired_gaming", "phone_cals", "color"])
+    headphones = collections.namedtuple("Headphones", ["image", "name", "year", "sound", "commute", "sports", "office",
+                                                       "wireless_gaming", "wired_gaming", "phone_cals", "color",
+                                                       "price"])
     # try to parse it)))
     page = requests.get("https://www.rtings.com/headphones/tools/table")
 
@@ -31,13 +32,17 @@ if __name__ == '__main__':
     headphones_for_db = list()
     for headphone in tbody:
         if type(headphone) == bs4.element.Tag:
-            url = headphone.find(["img"])
             headphone_info_list = [name for name in headphone]
             headphone_data = dict()
             for i in range(len(headphone_info_list)):
                 match i:
                     case 0:
                         headphone_data["image"] = headphone_info_list[0].find(["img"])["src"]
+                        headphone_data["name"] = headphone_info_list[0] \
+                            .find(["div", "table_cell_product"]) \
+                            .find('a', ["div", "table_cell_product-link"]) \
+                            .find(["div", "table_cell_product-details"]) \
+                            .find(["div", "table_cell_product-name"]).text
                     case 1:
                         headphone_data["year"] = int(headphone_info_list[1].find(["span", "score_box-value"]).text[:-1])
                     case 2:
@@ -45,17 +50,23 @@ if __name__ == '__main__':
                     case 3:
                         headphone_data["commute|travel"] = float(headphone_info_list[3].find(["span"]).text)
                     case 4:
-                        headphone_data["sport|fitness"] = float(headphone_info_list[4].find(["span", "score_box-value"]).text)
+                        headphone_data["sport|fitness"] = float(
+                            headphone_info_list[4].find(["span", "score_box-value"]).text)
                     case 5:
                         headphone_data["office"] = float(headphone_info_list[5].find(["span", "score_box-value"]).text)
                     case 6:
-                        headphone_data["wireless gaming"] = float(headphone_info_list[6].find(["span", "score_box-value"]).text)
+                        headphone_data["wireless gaming"] = float(
+                            headphone_info_list[6].find(["span", "score_box-value"]).text)
                     case 7:
-                        headphone_data["wired gaming"] = float(headphone_info_list[7].find(["span", "score_box-value"]).text)
+                        headphone_data["wired gaming"] = float(
+                            headphone_info_list[7].find(["span", "score_box-value"]).text)
                     case 8:
-                        headphone_data["Phone calls"] = float(headphone_info_list[8].find(["span", "score_box-value"]).text)
+                        headphone_data["Phone calls"] = float(
+                            headphone_info_list[8].find(["span", "score_box-value"]).text)
                     case 9:
                         headphone_data["color"] = headphone_info_list[9].find(["span", "score_box-value"]).text
+                    case 10:
+                        headphone_data["price"] = random.randint(50, random.randint(400, 1000))
                     case _:
                         pass
             headphones_for_db.append(headphones(*headphone_data.values()))
