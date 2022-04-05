@@ -12,6 +12,7 @@ There is simple `namedTuple` __Headphones__ for handle all information about our
 
 info:
  - link to image
+ - name of the Headphone
  - Product year
  - Neutral sound
  - Commute
@@ -21,3 +22,4 @@ info:
  - Wired Gaming
  - Phone Calls
  - Color
+ - Random price
