@@ -3,7 +3,6 @@ import collections
 import requests
 import random
 import bs4
-import re
 
 
 def load_page(filename):
@@ -74,9 +73,9 @@ class HeadphonesWeb:
         return headphone_data
 
     @classmethod
-    def parse_page(cls, url=None, filename=None):
+    def parse_page(cls, url=None, filename=None) -> collections.namedtuple:
         """
-        Parse shop web-page.
+        Parse shop web-page
         :param url: link shop table
         :param filename: or file with page
         :return: None
@@ -94,6 +93,8 @@ class HeadphonesWeb:
                              for headphone in tbody if isinstance(headphone, bs4.element.Tag)]
 
         print(f"Total amount of headphones: {len(headphones_for_db)}")
+
+        return headphones_for_db
 
 
 if __name__ == "__main__":
