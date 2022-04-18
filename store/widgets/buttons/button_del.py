@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# coding --utf-8--
 from store.widgets.buttons.base import BaseButton, Ui_MainWindow
 
 
@@ -9,5 +11,5 @@ class DelButton(BaseButton):
         parent.button_del.clicked.connect(self._action)
 
     def _action(self):
-        print("TEST DEL BUTTON")
+        logger.info("TEST DEL BUTTON")
         pass

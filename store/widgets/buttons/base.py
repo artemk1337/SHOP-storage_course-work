@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# coding --utf-8--
 from PyQt5.QtWidgets import QWidget
 
 from store.ui.main_ui import Ui_MainWindow

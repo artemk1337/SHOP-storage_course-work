@@ -92,7 +92,7 @@ class HeadphonesWeb:
         headphones_for_db = [cls.HEADPHONES(*cls._preapare_headphones_data([name for name in headphone]).values())
                              for headphone in tbody if isinstance(headphone, bs4.element.Tag)]
 
-        print(f"Total amount of headphones: {len(headphones_for_db)}")
+        logger.info(f"Total amount of headphones: {len(headphones_for_db)}")
 
         return headphones_for_db
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# coding --utf-8--
 from store.widgets.buttons.base import BaseButton, Ui_MainWindow
 
 
@@ -9,5 +11,5 @@ class ClearButton(BaseButton):
         parent.button_clear.clicked.connect(self._action)
 
     def _action(self):
-        print("TEST CLEAR BUTTON")
+        logger.info("TEST CLEAR BUTTON")
         pass

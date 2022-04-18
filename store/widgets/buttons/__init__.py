@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# coding --utf-8--
+
 from store.widgets.buttons.button_add import AddButton
 from store.widgets.buttons.button_del import DelButton
 from store.widgets.buttons.button_update import UpdateButton
