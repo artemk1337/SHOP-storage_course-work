@@ -1,4 +1,8 @@
+#!/usr/bin/env python3
+# coding --utf-8--
+
 from bs4 import BeautifulSoup
+from loguru import logger
 import collections
 import requests
 import random
