@@ -3,3 +3,4 @@ beautifulsoup4~=4.10.0
 PyQt5~=5.15.6
 setuptools~=60.0.0
 loguru~=0.6.0
+pyzmq~=22.3.0

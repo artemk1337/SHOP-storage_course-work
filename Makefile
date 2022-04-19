@@ -36,4 +36,35 @@ all:
 	 clean - clean all addition file, build directory and output archive file\n\
 	 test - run all tests\n\
 	 pack - make output archive\n\
+	 app  - run our app\n\
 	"
+
+develop:
+	virtualenv  $(VENV_DIR) && \
+	source $(VENV_DIR)/bin/activate && \
+	pip install -r requirements.txt && \
+	deactivate
+
+
+build:
+	source $(VENV_DIR)/bin/activate && \
+	$(PYTHON_PATH) setup.py clean install && \
+	deactivate
+
+clean:
+	rm -rf $(BIN_DIR) $(OBJ_DIR) build dist $(VENV_DIR) headphones_store.egg-info
+
+test:
+	source $(VENV_DIR)/bin/activate && \
+	$(PYTHON_PATH) tests/*.py && \
+	deactivate
+
+pack:
+	source $(VENV_DIR)/bin/activate && \
+	$(PYTHON_PATH) setup.py clean install bdist_wheel && \
+	deactivate
+
+app:
+	source $(VENV_DIR)/bin/activate && \
+	$(PYTHON_PATH) -m store && \
+	deactivate

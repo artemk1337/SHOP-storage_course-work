@@ -120,7 +120,7 @@ class SqliteWrapper(metaclass=Singleton):
         where_fields = "WHERE "
         for name, value in zip(find_attributes._fields, find_attributes):
             if value is not None:
-                if "%" not in value:
+                if not isinstance(value, str) or "%" not in value:
                     where_fields += f"{name}='{value}'"
                 else:
                     where_fields += f"{name} like '{value}'"
