@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QMainWindow
 
 from store.widgets.buttons import InitButtons
-from store.settings import InitSettings
 from store.ui.main_ui import Ui_MainWindow
+from store.settings import InitSettings
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):

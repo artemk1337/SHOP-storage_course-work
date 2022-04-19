@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding --utf-8--
 from store.widgets.buttons.base import BaseButton, Ui_MainWindow
+from loguru import logger
 
 
 class ClearButton(BaseButton):

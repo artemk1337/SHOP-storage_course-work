@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # coding --utf-8--
+import requests
 
+from store.db.singleton import Singleton
 from collections import namedtuple
 from store.db import get_db_data
 from loguru import logger
@@ -8,20 +10,11 @@ import sqlite3
 import pathlib
 import typing
 
-BASE_DIR = pathlib.Path(__file__).resolve().parent.__str__()
-
-
-class Singleton(type):
-    _instances = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
+BASE_DIR = pathlib.Path(__file__).resolve().parent.parent.__str__() + "/data"
 
 
 class SqliteWrapper(metaclass=Singleton):
-    fields = "image,name,sound,year,commute,sports,office,wireless_gaming,wired_gaming,phone_cals,color,price" \
+    fields = "image,name,sound,year,commute,sports,office,wireless_gaming,wired_gaming,phone_cals,color,price,id" \
         .split(",")
     DBAttributes = namedtuple("DBAttributes", fields, defaults=(None,) * len(fields))
     cursor: sqlite3.Cursor
@@ -40,16 +33,16 @@ class SqliteWrapper(metaclass=Singleton):
         self.db_file_name = db_file_name
         assert (self.db_file_name.split(".")[-1] != ".db", "You using not database file! Try to open \"sqlite3.db\".")
 
-        self.sqlite_connection = sqlite3.connect(self.db_file_name)
+        self.sqlite_connection = sqlite3.connect(self.db_file_name, check_same_thread=False)
         self.cursor = self.sqlite_connection.cursor()
 
-    def __stop_db(self):
+    def _stop_db(self):
         self.cursor.close()
         if self.sqlite_connection:
             self.sqlite_connection.close()
 
     def __del__(self):
-        self.__stop_db()
+        self._stop_db()
 
     def reset(self, db_file_name: str = BASE_DIR + "/sqlite_table.db"):
         """
@@ -57,7 +50,7 @@ class SqliteWrapper(metaclass=Singleton):
         :param db_file_name: path to sqlite database file
         :return: nothing
         """
-        self.__stop_db()
+        self._stop_db()
         self._init(db_file_name)
 
     def create_table(self):
@@ -127,9 +120,11 @@ class SqliteWrapper(metaclass=Singleton):
         where_fields = "WHERE "
         for name, value in zip(find_attributes._fields, find_attributes):
             if value is not None:
-                where_fields += f"{name}='{value}'"
+                if "%" not in value:
+                    where_fields += f"{name}='{value}'"
+                else:
+                    where_fields += f"{name} like '{value}'"
         sql_query_select += where_fields + ";"
-
         return sql_query_select, where_fields
 
     def get_db_object(self, find_attributes: DBAttributes):
@@ -180,8 +175,38 @@ class SqliteWrapper(metaclass=Singleton):
         try:
             sql_query = f"DELETE from {self.table_name} where {attribute_name}='{attribute_value}'"
             self.sqlite_connection.execute(sql_query)
+            self.sqlite_connection.commit()
 
             self.cursor = self.sqlite_connection.cursor()
             logger.info(f"Successfully removed object with attributes: {attribute_name}='{attribute_value}'")
         except Exception as e:
             logger.error(f"Catch error while removing from db: {e}")
+
+    @staticmethod
+    def download_image(url: str, file_name: str):
+        r = requests.get(url)
+        # retrieving data from the URL using get method
+
+        with open(file_name, 'wb') as f:
+            # giving a name and saving it in any required format
+            # opening the file in write mode
+            f.write(r.content)
+
+    def __prepare_image_name(self, name: str, temp_directory: str = BASE_DIR + "/images") -> str:
+        return temp_directory + "/" + name \
+                .replace(" ", "_") \
+                .replace("/", "-") \
+                .lower() + ".jpg"
+
+    def download_images(self, temp_directory: str = BASE_DIR + "/images"):
+        for db_object in self.get_all_data_from_db():
+            name = self.__prepare_image_name(db_object[3], temp_directory)
+            url = db_object[1]
+            try:
+                self.download_image(url, name)
+                logger.info(f"Downloading {name} :{url}")
+            except Exception as e:
+                logger.warning(f"file_name: \t {db_object[3]} \n {e} ")
+
+    def find_image(self, name: str):
+        return self.__prepare_image_name(name)

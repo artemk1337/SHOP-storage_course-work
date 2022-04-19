@@ -31,13 +31,12 @@ class HeadphonesWeb:
                   )
 
     @staticmethod
-    def _preapare_headphones_data(headphone_info_list: list) -> dict:
+    def _prepare_headphones_data(headphone_info_list: list) -> dict:
         """
-
-        :param headphone_info_list:
+            Prepare statement ._.
+        :param headphone_info_list
         :return:
         """
-
         headphone_data = {}
         for idx, value in enumerate(headphone_info_list):
             match idx:
@@ -93,7 +92,7 @@ class HeadphonesWeb:
 
         tbody = table.find_all(["tbody"])[0]
 
-        headphones_for_db = [cls.HEADPHONES(*cls._preapare_headphones_data([name for name in headphone]).values())
+        headphones_for_db = [cls.HEADPHONES(*cls._prepare_headphones_data([name for name in headphone]).values())
                              for headphone in tbody if isinstance(headphone, bs4.element.Tag)]
 
         logger.info(f"Total amount of headphones: {len(headphones_for_db)}")
